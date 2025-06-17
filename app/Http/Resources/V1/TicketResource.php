@@ -33,18 +33,23 @@ class TicketResource extends JsonResource
                 'type' => 'user',
                 'id' => $this->user_id,
             ],
+            
             'links' => [
-                ['self' => 'todo']
+                'self' => route('users.show', ['user' => $this->user_id]),
             ]
          ]
     ],
     'includes' => [
-        new UserResource($this->user),
+            // The author key is only included if the user relationship was loaded.
 
-    ],
+            'author' => $this->whenLoaded('user', function () {
+                return new UserResource($this->user);
+            }),
+        ],
+    
     'links' => [
        
-        'url' => route('tickets.show', $this->ticket_id),
+        'self' => route('tickets.show', $this->ticket_id),
     ],
 ];
 
