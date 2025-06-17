@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login',  [Authcontroller::class,  'login']);
+// Route::get('/login',  [Authcontroller::class,  'login']);
