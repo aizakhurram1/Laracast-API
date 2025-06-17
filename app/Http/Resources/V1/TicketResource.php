@@ -33,7 +33,7 @@ class TicketResource extends JsonResource
                 'type' => 'user',
                 'id' => $this->user_id,
             ],
-            
+
             'links' => [
                 'self' => route('users.show', ['user' => $this->user_id]),
             ]
@@ -42,7 +42,7 @@ class TicketResource extends JsonResource
     'includes' => [
             // The author key is only included if the user relationship was loaded.
 
-            'author' => $this->whenLoaded('user', function () {
+            'author' => $this->whenLoaded('author', function () {
                 return new UserResource($this->user);
             }),
         ],

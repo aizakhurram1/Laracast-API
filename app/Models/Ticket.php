@@ -15,9 +15,9 @@ class Ticket extends Model
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory;
     protected $primaryKey = 'ticket_id';
-    public function user(): BelongsTo {
+    public function author(): BelongsTo {
         
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
           
     }
 
