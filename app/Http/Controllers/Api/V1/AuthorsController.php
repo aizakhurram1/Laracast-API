@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Filters\V1\AuthorFilter;
 use App\Http\Requests\Api\V1\StoreUserRequest;
 use App\Http\Requests\Api\v1\UpdateUserRequest;
 use App\Http\Resources\V1\UserResource;
@@ -13,15 +14,10 @@ class AuthorsController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(AuthorFilter $filter)
     {
-        $query = User::query();
-
-        if ($this->include('tickets')) {
-            $query->with('tickets');
-        }
-
-        return UserResource::collection($query->paginate());
+        
+        return UserResource::collection(User::filter($filter)->paginate());
         
     }
 
