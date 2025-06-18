@@ -43,15 +43,15 @@ class TicketController extends ApiController
             );
         }
 
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $request->input('data.relationships.author.data.id')
+        // $model = [
+        //     'title' => $request->input('data.attributes.title'),
+        //     'description' => $request->input('data.attributes.description'),
+        //     'status' => $request->input('data.attributes.status'),
+        //     'user_id' => $request->input('data.relationships.author.data.id')
 
-        ];
+        // ];
 
-        return new TicketResource(Ticket::create($model));
+        return new TicketResource(Ticket::create($request->mappedAttributes()));
 
     }
 
@@ -90,24 +90,34 @@ class TicketController extends ApiController
     public function update(UpdateTicketRequest $request, $ticket_id)
     {
         // PATCH
-    }
-
-    public function replace(ReplaceTicketRequest $request, $ticketId)
-    {
-        $ticket = Ticket::find($ticketId);
+        $ticket = Ticket::find($ticket_id);
         if (!$ticket) {
             return response()->json(['message' => 'Ticket not found'], 404);
         }
 
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $request->input('data.relationships.author.data.id')
 
-        ];
 
-        $ticket->update($model);
+        $ticket->update($request->mappedAttributes());
+
+        return new TicketResource($ticket);
+    }
+
+    public function replace(ReplaceTicketRequest $request, $ticket_id)
+    {
+        $ticket = Ticket::find($ticket_id);
+        if (!$ticket) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
+        // $model = [
+        //     'title' => $request->input('data.attributes.title'),
+        //     'description' => $request->input('data.attributes.description'),
+        //     'status' => $request->input('data.attributes.status'),
+        //     'user_id' => $request->input('data.relationships.author.data.id')
+
+        // ];
+
+        $ticket->update($request->mappedAttributes());
 
         return new TicketResource($ticket);
     }
