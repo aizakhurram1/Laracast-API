@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Filters\V1\TicketFilter;
+use App\Http\Requests\Api\V1\ReplaceTicketRequest;
 use App\Http\Requests\Api\V1\StoreTicketRequest;
 use App\Http\Requests\Api\V1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketResource;
@@ -18,7 +19,7 @@ class TicketController extends ApiController
     public function index(TicketFilter $filters)
     {
 
-       return TicketResource::collection(Ticket::filter($filters)->paginate());
+        return TicketResource::collection(Ticket::filter($filters)->paginate());
     }
 
 
@@ -28,15 +29,17 @@ class TicketController extends ApiController
     public function store(StoreTicketRequest $request)
     {
         //post tickets request
-        try{
-        $user = User::findOrFail($request->input('data.relationships.author.data.id'));
-        
-        } catch(ModelNotFoundException $exception){
-             
+        try {
+            $user = User::findOrFail($request->input('data.relationships.author.data.id'));
+
+        } catch (ModelNotFoundException $exception) {
+
             //return ok to avoid server error as it will be a aknow vulnerability for the attacker
-             return $this->ok('user not found', [
-                'error' => 'The provided user id does not exist' 
-             ]
+            return $this->ok(
+                'user not found',
+                [
+                    'error' => 'The provided user id does not exist'
+                ]
             );
         }
 
@@ -52,41 +55,61 @@ class TicketController extends ApiController
 
     }
 
-    
+
 
     /**
      * Display the specified resource.
      */
     public function show($ticket_id)
     {
-        try{
+        try {
 
             $ticket = Ticket::findOrFail($ticket_id);
-         // the include method is  to conditionally load relationships:
-                if ($this->include('author')) {
+            // the include method is  to conditionally load relationships:
+            if ($this->include('author')) {
 
-                 $ticket->load('user');
-             }
+                $ticket->load('user');
+            }
 
-               return new TicketResource($ticket);
-        
-            }catch(ModelNotFoundException $exception){
+            return new TicketResource($ticket);
+
+        } catch (ModelNotFoundException $exception) {
 
             return $this->error('Ticket not found', 404);
-        
-        
+
+
         }
     }
 
-    
-    
+
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, $ticket_id)
     {
-        //
+        // PATCH
+    }
+
+    public function replace(ReplaceTicketRequest $request, $ticketId)
+    {
+        $ticket = Ticket::find($ticketId);
+        if (!$ticket) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
+        $model = [
+            'title' => $request->input('data.attributes.title'),
+            'description' => $request->input('data.attributes.description'),
+            'status' => $request->input('data.attributes.status'),
+            'user_id' => $request->input('data.relationships.author.data.id')
+
+        ];
+
+        $ticket->update($model);
+
+        return new TicketResource($ticket);
     }
 
     /**
@@ -95,17 +118,17 @@ class TicketController extends ApiController
     public function destroy($ticket_id)
     {
         //to ensure no server error is shown to prevent from vulnerability as reponse is a part of payload
-        try{
+        try {
             $ticket = Ticket::findOrFail($ticket_id);
             $ticket->delete();
 
             return $this->ok('Ticket successfully deleted', null);
-        
-        }catch(ModelNotFoundException $exception){
+
+        } catch (ModelNotFoundException $exception) {
 
             return $this->error('Ticket not found', 404);
-        
-        
+
+
         }
     }
 }

@@ -15,43 +15,43 @@ class TicketResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-          'type' => 'ticket',
-          'id' => (string) $this->ticket_id,
-          'attributes' => [
-          'title' => $this->title,
-          'description' => $this->when(
-            $request->routeIs('tickets.show'),
-            $this->description,
-          ),
-          'status' => $this->status,
-          'createdAt' => $this->created_at,
-          'updatedAt' => $this->updated_at,
-    ],
-    'relationships'=>[
-         'author' => [
-            'data' => [
-                'type' => 'user',
-                'id' => $this->user_id,
+            'type' => 'ticket',
+            'id' => (string) $this->ticket_id,
+            'attributes' => [
+                'title' => $this->title,
+                'description' => $this->when(
+                    !$request->routeIs(['tickets.index', 'authors.tickets.index']),
+                    $this->description,
+                ),
+                'status' => $this->status,
+                'createdAt' => $this->created_at,
+                'updatedAt' => $this->updated_at,
+            ],
+            'relationships' => [
+                'author' => [
+                    'data' => [
+                        'type' => 'user',
+                        'id' => $this->user_id,
+                    ],
+
+                    'links' => [
+                        'self' => route('authors.show', ['author' => $this->user_id]),
+                    ]
+                ]
+            ],
+            'includes' => [
+                // The author key is only included if the user relationship was loaded.
+
+                'author' => $this->whenLoaded('author', function () {
+                    return new UserResource($this->user);
+                }),
             ],
 
             'links' => [
-                'self' => route('authors.show', ['author' => $this->user_id]),
-            ]
-         ]
-    ],
-    'includes' => [
-            // The author key is only included if the user relationship was loaded.
 
-            'author' => $this->whenLoaded('author', function () {
-                return new UserResource($this->user);
-            }),
-        ],
-    
-    'links' => [
-       
-        'self' => route('tickets.show', $this->ticket_id),
-    ],
-];
+                'self' => route('tickets.show', $this->ticket_id),
+            ],
+        ];
 
-}
+    }
 }
