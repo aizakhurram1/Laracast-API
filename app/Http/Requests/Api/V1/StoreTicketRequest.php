@@ -11,7 +11,8 @@ class StoreTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        //if user is authenticated
+        return true;
     }
 
     /**
@@ -22,7 +23,15 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'data.attributes.title' => 'required|string',
+            'data.attributes.description' => 'required|string',
+            'data.attributes.status' => 'required|string|in:A,C,H,X',
+            'data.relationships.author.data.id' => 'required|integer',
+        ];
+    }
+    public function messages(){
+        return [
+            'data.attributes.status' => 'The data.attributes.status value is invalid. Please use A, C, H, and X.'
         ];
     }
 }

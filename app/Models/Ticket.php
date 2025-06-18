@@ -15,6 +15,10 @@ class Ticket extends Model
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory;
     protected $primaryKey = 'ticket_id';
+
+    // we use fillable to prevent from mass assignment (only the variable set in fillable can be assigned)
+    protected $fillable = ['title', 'status', 'description', 'user_id'];
+
     public function author(): BelongsTo {
         
         return $this->belongsTo(User::class, 'user_id');
