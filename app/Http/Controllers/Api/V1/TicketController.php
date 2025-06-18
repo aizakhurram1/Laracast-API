@@ -57,15 +57,25 @@ class TicketController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(Ticket $ticket)
+    public function show($ticket_id)
     {
+        try{
+
+            $ticket = Ticket::findOrFail($ticket_id);
          // the include method is  to conditionally load relationships:
-         if ($this->include('author')) {
+                if ($this->include('author')) {
 
-              $ticket->load('user');
+                 $ticket->load('user');
+             }
+
+               return new TicketResource($ticket);
+        
+            }catch(ModelNotFoundException $exception){
+
+            return $this->error('Ticket not found', 404);
+        
+        
         }
-
-          return new TicketResource($ticket);
     }
 
     
