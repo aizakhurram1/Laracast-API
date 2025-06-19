@@ -55,3 +55,6 @@ class TicketResource extends JsonResource
 
     }
 }
+
+
+//raw sql

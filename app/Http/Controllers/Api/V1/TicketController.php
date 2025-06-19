@@ -9,7 +9,7 @@ use App\Http\Requests\Api\V1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Policies\V1\TicketPolicy;
+use App\Policies\TicketPolicy;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -34,7 +34,9 @@ class TicketController extends ApiController
         //post tickets request
         try {
             $user = User::findOrFail($request->input('data.relationships.author.data.id'));
-
+            $this->isAble('store', null);
+        // TO DO ADD TICKET
+        
         } catch (ModelNotFoundException $exception) {
 
             //return ok to avoid server error as it will be a aknow vulnerability for the attacker
@@ -45,14 +47,6 @@ class TicketController extends ApiController
                 ]
             );
         }
-
-        // $model = [
-        //     'title' => $request->input('data.attributes.title'),
-        //     'description' => $request->input('data.attributes.description'),
-        //     'status' => $request->input('data.attributes.status'),
-        //     'user_id' => $request->input('data.relationships.author.data.id')
-
-        // ];
 
         return new TicketResource(Ticket::create($request->mappedAttributes()));
 
@@ -99,21 +93,34 @@ class TicketController extends ApiController
                 return response()->json(['message' => 'Ticket not found'], 404);
             }
 
+            \Log::info('Auth check:', [
+                'user_id' => $request->user()->id,
+                'ticket_user_id' => $ticket->user_id,
+                'tokenAbilities' => $request->user()->currentAccessToken()->abilities ?? [],
+                'canUpdate' => $request->user()->tokenCan('ticket:update'),
+                'canUpdateOwn' => $request->user()->tokenCan('ticket:own:update'),
+            ]);
+
             //policy, ability to authorize users
             $this->isAble('update', $ticket);
             $request->user()->id == $ticket->user_id;
+            // dd($request->user()->id, $request->user()->id->tokenCan('ticket:update'), $request->user()->idtokenCan('ticket:own:update'));
+
 
             $ticket->update($request->mappedAttributes());
 
             return new TicketResource($ticket);
+
         } catch (ModelNotFoundException $exception) {
+
             return $this->error('Ticket not found', 404);
-
+        
         } catch (AuthorizationException $exception) {
-            return $this->error('Your are not authorized to update ticket', 401);
-        }
-    }
 
+            \Log::error('Unauthorized: ' . $exception->getMessage());
+            return $this->error('You are not authorized to update ticket', 401);
+        } 
+}
     public function replace(ReplaceTicketRequest $request, $ticket_id)
     {
         $ticket = Ticket::find($ticket_id);
@@ -121,13 +128,7 @@ class TicketController extends ApiController
             return response()->json(['message' => 'Ticket not found'], 404);
         }
 
-        // $model = [
-        //     'title' => $request->input('data.attributes.title'),
-        //     'description' => $request->input('data.attributes.description'),
-        //     'status' => $request->input('data.attributes.status'),
-        //     'user_id' => $request->input('data.relationships.author.data.id')
-
-        // ];
+        $this->isAble('replace', $ticket);
 
         $ticket->update($request->mappedAttributes());
 
@@ -142,7 +143,11 @@ class TicketController extends ApiController
         //to ensure no server error is shown to prevent from vulnerability as reponse is a part of payload
         try {
             $ticket = Ticket::findOrFail($ticket_id);
+            $this->isAble('delete', $ticket);
+
+
             $ticket->delete();
+
 
             return $this->ok('Ticket successfully deleted', null);
 

@@ -9,6 +9,8 @@ class TicketFilter extends QueryFilter {
         'createdAt' => 'created_at',
         'updatedAt' => 'updated_at'
     ];
+
+    //eagle loading pre fetches reduced the payload
     public function include($value){
        return $this->builder->with($value);
     }
