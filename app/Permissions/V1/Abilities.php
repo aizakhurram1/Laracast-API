@@ -13,6 +13,7 @@ final class Abilities
     public const DeleteTicket = "ticket:delete";
 
     public const UpdateOwnTicket = "ticket:own:update";
+    public const CreateOwnTicket = "ticket:own:create";
     public const DeleteOwnTicket = "ticket:own:delete";
 
     public const CreateUser = "user:create";

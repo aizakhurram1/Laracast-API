@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Permissions\V1\Abilities;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTicketRequest extends BaseTicketRequest
@@ -28,6 +29,11 @@ class UpdateTicketRequest extends BaseTicketRequest
             'data.relationships.author.data.id' => 'sometimes|integer',
 
         ];
+
+        if($this->user()->tokenCan(Abilities::UpdateOwnTicket))
+        {
+            $rules['data.relationships.author.data.id' ] = 'prohibited';
+        }
 
 
         return $rules;

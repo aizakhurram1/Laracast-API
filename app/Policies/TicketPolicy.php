@@ -8,10 +8,11 @@ use App\Permissions\V1\Abilities;
 
 class TicketPolicy
 {
-    public function store(User $user, Ticket $ticket)
+    public function store(User $user)
      {
    
-        if ($user->tokenCan(Abilities::CreateTicket)) {
+        if ($user->tokenCan(Abilities::CreateTicket)
+            || $user->tokenCan(Abilities::CreateOwnTicket) ) {
             return true;
         } 
 
