@@ -10,7 +10,6 @@ class TicketPolicy
 {
     public function store(User $user)
      {
-   
         if ($user->tokenCan(Abilities::CreateTicket)
             || $user->tokenCan(Abilities::CreateOwnTicket) ) {
             return true;
@@ -20,6 +19,7 @@ class TicketPolicy
     }
     public function update(User $user, Ticket $ticket)
      {
+       
    
         if ($user->tokenCan(Abilities::UpdateTicket)) {
             return true;
@@ -46,9 +46,7 @@ class TicketPolicy
     public function replace(User $user, Ticket $ticket)
      {
    
-        if ($user->tokenCan(Abilities::ReplaceTicket)) {
-            return true;
-        } 
-        return false;
+       return $user->tokenCan(Abilities::ReplaceTicket); 
+         
     }
 }

@@ -6,9 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BaseTicketRequest extends FormRequest
 {
-    public function mappedAttributes()
+    public function mappedAttributes(array $other_attributes=[])
     {
-        $attribute_map = [
+        $attribute_map = array_merge( [
             'data.attributes.title' => 'title',
             'data.attributes.description' => 'description',
             'data.attributes.status' => 'status',
@@ -17,7 +17,7 @@ class BaseTicketRequest extends FormRequest
             'data.relationships.author.data.id' => 'user_id'
 
 
-        ];
+        ], $other_attributes);
 
         $attributes_to_update = [];
 
