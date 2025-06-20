@@ -44,10 +44,11 @@ class AuthorTicketsController extends ApiController
     public function replace(ReplaceTicketRequest $request, $author_id, $ticket_id)
     {
         try {
-            $ticket = Ticket::where('id', $ticket_id)
-                            ->where('user_id', (int)$author_id)
-                            ->firstOrFail();
+              $ticket = Ticket::findOrFail($ticket_id);
 
+                if ((int) $ticket->user_id !== (int) $author_id) {
+                    return $this->error('This ticket does not belong to the specified author.',403 );
+                }
             $this->isAble('replace', $ticket);
 
             if ($ticket->user_id == $author_id) {
@@ -68,9 +69,12 @@ class AuthorTicketsController extends ApiController
     {
         // PATCH
         try {
-            $ticket = Ticket::where('id', $ticket_id)
-                            ->where('user_id', (int)$author_id)
-                            ->firstOrFail();
+                $ticket = Ticket::findOrFail($ticket_id);
+
+                if ((int) $ticket->user_id !== (int) $author_id) {
+                    return $this->error('This ticket does not belong to the specified author.',403 );
+                }
+            
 
                 $this->isAble('update', $ticket);
                 $ticket->update($request->mappedAttributes());
