@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 class ReplaceUserRequest extends BaseUserRequest
 {
     /**
@@ -11,7 +9,7 @@ class ReplaceUserRequest extends BaseUserRequest
      */
     public function authorize(): bool
     {
-        //if user is authenticated
+        // if user is authenticated
         return true;
     }
 
@@ -27,13 +25,10 @@ class ReplaceUserRequest extends BaseUserRequest
             'data.attributes.email' => 'required|email',
             'data.attributes.is_manager' => 'required|boolean',
             'data.attributes.password' => 'required|string',
-          
 
         ];
-
 
         return $rules;
 
     }
-
 }

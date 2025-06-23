@@ -7,10 +7,7 @@ use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-
-
-//Route::resource('tickets',TicketController::class);
+// Route::resource('tickets',TicketController::class);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('tickets', TicketController::class)->except(['update']);
@@ -21,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('users/{user}', [UserController::class, 'replace']);
     Route::patch('users/{user}', [UserController::class, 'update']);
 
-    Route::apiResource('authors', AuthorsController::class)->except(methods:['store', 'update', 'delete']);
+    Route::apiResource('authors', AuthorsController::class)->except(methods: ['store', 'update', 'delete']);
     Route::apiResource('authors.tickets', AuthorTicketsController::class)->except(['update']);
     Route::put('authors/{author}/tickets/{ticket}', [AuthorTicketsController::class, 'replace']);
     Route::patch('authors/{author}/tickets/{ticket}', [AuthorTicketsController::class, 'update']);
@@ -32,4 +29,4 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-//session vs cookies
+// session vs cookies

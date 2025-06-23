@@ -13,8 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-      use HasApiTokens, HasFactory, Notifiable;
-
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_manager'
+        'is_manager',
     ];
 
     /**
@@ -48,7 +47,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_manager' => 'boolean'
+            'is_manager' => 'boolean',
         ];
     }
 
@@ -57,7 +56,8 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class);
     }
 
-    public function scopeFilter(Builder $builder, QueryFilter $filters){
+    public function scopeFilter(Builder $builder, QueryFilter $filters)
+    {
         return $filters->apply($builder);
     }
 }

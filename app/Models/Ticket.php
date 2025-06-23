@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Http\Filters\V1\QueryFilter;
-use App\Http\Filters\V1\TicketFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,21 +10,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ticket extends Model
 {
-    
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory;
+
     protected $primaryKey = 'ticket_id';
 
     // we use fillable to prevent from mass assignment (only the variable set in fillable can be assigned)
     protected $fillable = ['title', 'status', 'description', 'user_id'];
 
-    public function author(): BelongsTo {
-        
+    public function author(): BelongsTo
+    {
+
         return $this->belongsTo(User::class, 'user_id');
-          
+
     }
 
-    public function scopeFilter(Builder $bulider, QueryFilter $filters){
+    public function scopeFilter(Builder $bulider, QueryFilter $filters)
+    {
         return $filters->apply($bulider);
     }
 }

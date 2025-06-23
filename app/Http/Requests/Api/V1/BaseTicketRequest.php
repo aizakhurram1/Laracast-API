@@ -6,21 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BaseTicketRequest extends FormRequest
 {
-    public function mappedAttributes(array $other_attributes=[])
+    public function mappedAttributes(array $other_attributes = [])
     {
-        $attribute_map = array_merge( [
+        $attribute_map = array_merge([
             'data.attributes.title' => 'title',
             'data.attributes.description' => 'description',
             'data.attributes.status' => 'status',
             'data.attributes.createdAt' => 'created_at',
             'data.attributes.updatedAt' => 'updated_at',
-            'data.relationships.author.data.id' => 'user_id'
-
+            'data.relationships.author.data.id' => 'user_id',
 
         ], $other_attributes);
 
         $attributes_to_update = [];
-
 
         foreach ($attribute_map as $key => $attribute) {
             if ($this->has($key)) {
@@ -30,12 +28,12 @@ class BaseTicketRequest extends FormRequest
 
         return $attributes_to_update;
 
-
     }
+
     public function messages()
     {
         return [
-            'data.attributes.status' => 'The data.attributes.status value is invalid. Please use A, C, H, and X.'
+            'data.attributes.status' => 'The data.attributes.status value is invalid. Please use A, C, H, and X.',
         ];
     }
 }

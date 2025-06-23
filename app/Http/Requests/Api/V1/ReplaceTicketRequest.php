@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Api\V1;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 class ReplaceTicketRequest extends BaseTicketRequest
 {
     /**
@@ -11,7 +9,7 @@ class ReplaceTicketRequest extends BaseTicketRequest
      */
     public function authorize(): bool
     {
-        //if user is authenticated
+        // if user is authenticated
         return true;
     }
 
@@ -30,9 +28,7 @@ class ReplaceTicketRequest extends BaseTicketRequest
 
         ];
 
-
         return $rules;
 
     }
-
 }

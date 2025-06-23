@@ -20,7 +20,7 @@ class TicketResource extends JsonResource
             'attributes' => [
                 'title' => $this->title,
                 'description' => $this->when(
-                    !$request->routeIs(['tickets.index', 'authors.tickets.index']),
+                    ! $request->routeIs(['tickets.index', 'authors.tickets.index']),
                     $this->description,
                 ),
                 'status' => $this->status,
@@ -36,8 +36,8 @@ class TicketResource extends JsonResource
 
                     'links' => [
                         'self' => route('authors.show', ['author' => $this->user_id]),
-                    ]
-                ]
+                    ],
+                ],
             ],
             'includes' => [
                 // The author key is only included if the user relationship was loaded.
@@ -56,5 +56,4 @@ class TicketResource extends JsonResource
     }
 }
 
-
-//raw sql
+// raw sql

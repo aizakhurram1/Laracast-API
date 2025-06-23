@@ -16,9 +16,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-          Ticket::class => \App\Policies\TicketPolicy::class,
-          User::class => \App\Policies\UserPolicy::class
+        Ticket::class => \App\Policies\TicketPolicy::class,
+        User::class => \App\Policies\UserPolicy::class,
     ];
+
     /**
      * Register any authentication / authorization services.
      */

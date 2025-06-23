@@ -15,29 +15,30 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class UserController extends ApiController
 {
     protected $policy_class = UserPolicy::class;
+
     /**
      * Display a listing of the resource.
      */
     public function index(AuthorFilter $filter)
     {
-        
+
         return UserResource::collection(
             User::filter($filter)->paginate()
         );
-        
-    }
 
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreUserRequest $request)
     {
-        try{
+        try {
 
             $this->isAble('store', User::class);
+
             return new UserResource(User::create($request->mappedAttributes()));
-        } catch (AuthorizationException $ex){
+        } catch (AuthorizationException $ex) {
             return $this->error('You are not authorized to create users', 401);
 
         }
@@ -51,7 +52,6 @@ class UserController extends ApiController
         return new UserResource($user->load('tickets'));
     }
 
-    
     /**
      * Update the specified resource in storage.
      */
@@ -60,11 +60,11 @@ class UserController extends ApiController
         // PATCH
         try {
             $user = User::find($user_id);
-            if (!$user) {
+            if (! $user) {
                 return response()->json(['message' => 'User not found'], 404);
             }
 
-            //policy, ability to authorize users
+            // policy, ability to authorize users
             $this->isAble('update', $user);
 
             $user->update($request->mappedAttributes());
@@ -74,17 +74,17 @@ class UserController extends ApiController
         } catch (ModelNotFoundException $exception) {
 
             return $this->error('User not found', 404);
-        
+
         } catch (AuthorizationException $exception) {
 
             return $this->error('You are not authorized to update user', 401);
-        } 
+        }
     }
 
-     public function replace(ReplaceUserRequest $request, $user_id)
+    public function replace(ReplaceUserRequest $request, $user_id)
     {
         $user = User::findOrFail($user_id);
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
@@ -100,16 +100,16 @@ class UserController extends ApiController
      */
     public function destroy($user_id)
     {
-         try {
+        try {
             $user = User::findOrFail($user_id);
             $this->isAble('delete', $user);
             $user->delete();
+
             return $this->ok('User successfully deleted', null);
 
         } catch (ModelNotFoundException $exception) {
 
             return $this->error('User not found', 404);
-
 
         }
     }

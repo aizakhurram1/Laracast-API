@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;;
-
-use Illuminate\Foundation\Http\FormRequest;
+namespace App\Http\Requests\Api\V1;
 
 class UpdateUserRequest extends BaseUserRequest
 {
@@ -26,7 +24,6 @@ class UpdateUserRequest extends BaseUserRequest
             'data.attributes.email' => 'sometimes|email',
             'data.attributes.is_manager' => 'sometimes|boolean',
             'data.attributes.password' => 'sometimes|string',
-          
 
         ];
 

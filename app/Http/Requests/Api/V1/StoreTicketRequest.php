@@ -11,8 +11,8 @@ class StoreTicketRequest extends BaseTicketRequest
      */
     public function authorize(): bool
     {
-        //if user is authenticated
-      return true;
+        // if user is authenticated
+        return true;
     }
 
     /**
@@ -32,26 +32,25 @@ class StoreTicketRequest extends BaseTicketRequest
                 'required',
                 'integer',
                 'exists:users,id',
-                'in:' . $this->user()->id, // <== 👈 this ensures author is the authenticated user
+                'in:'.$this->user()->id, // <== 👈 this ensures author is the authenticated user
             ],
         ];
 
         $user = $this->user();
-        
-        if($user->tokenCan(Abilities::CreateOwnTicket)){
-            $rules[$author_id_attr] .= '|size:' . $user->id;
+
+        if ($user->tokenCan(Abilities::CreateOwnTicket)) {
+            $rules[$author_id_attr] .= '|size:'.$user->id;
         }
 
         return $rules;
     }
 
     protected function prepareForValidation(): void
-{
-    if ($this->routeIs('authors.tickets.store')) {
-        $this->merge([
-            'data.relationships.author.data.id' => $this->route('author'),
-        ]);
+    {
+        if ($this->routeIs('authors.tickets.store')) {
+            $this->merge([
+                'data.relationships.author.data.id' => $this->route('author'),
+            ]);
+        }
     }
-}
-
 }
