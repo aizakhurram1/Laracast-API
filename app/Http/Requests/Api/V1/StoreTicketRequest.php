@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Permissions\V1\Abilities;
-use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTicketRequest extends BaseTicketRequest
 {
@@ -30,20 +29,21 @@ class StoreTicketRequest extends BaseTicketRequest
             'data.attributes.title' => 'required|string',
             'data.attributes.description' => 'required|string',
             'data.attributes.status' => 'required|string|in:A,C,H,X',
-            $authorIdAttr => $authorRule . '|size:' . $user->id
+            $authorIdAttr => $authorRule.'|size:'.$user->id,
         ];
 
         if ($user->tokenCan(Abilities::CreateTicket)) {
             $rules[$authorIdAttr] = $authorRule;
         }
-        
+
         return $rules;
     }
 
-    protected function prepareForValidation() {
+    protected function prepareForValidation()
+    {
         if ($this->routeIs('authors.tickets.store')) {
             $this->merge([
-                'author' => $this->route('author')
+                'author' => $this->route('author'),
             ]);
         }
     }
